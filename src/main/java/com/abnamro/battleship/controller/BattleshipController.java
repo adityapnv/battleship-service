@@ -5,10 +5,7 @@ import com.abnamro.battleship.entity.Game;
 import com.abnamro.battleship.service.BattleshipService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api")
@@ -24,5 +21,13 @@ public class BattleshipController {
         return battleshipService.save(battleShipRequest);
 
     }
+
+    @PostMapping("/attack")
+    public ResponseEntity<String> attackCell(@RequestParam Long gameId, @RequestParam String playerName,
+                                             @RequestParam String position) {
+        return battleshipService.attack(gameId,playerName, position);
+
+    }
+
 
 }

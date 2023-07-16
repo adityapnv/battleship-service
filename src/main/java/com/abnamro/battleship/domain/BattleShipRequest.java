@@ -2,7 +2,6 @@ package com.abnamro.battleship.domain;
 
 import com.abnamro.battleship.entity.Ship;
 import lombok.Data;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
 

@@ -73,7 +73,7 @@ public class BattleshipService {
 
             if (isValidPosition(endRow, endCol)) {
                 return "Ship placement exceeds grid boundaries: " + position + " - " +
-                        (char) ('A' + endRow) + String.valueOf(endCol + 1);
+                        (char) ('A' + endRow) + (endCol + 1);
             }
 
             for (int i = row; i <= endRow; i++) {

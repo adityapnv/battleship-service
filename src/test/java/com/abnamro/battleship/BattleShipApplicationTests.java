@@ -1,11 +1,9 @@
 package com.abnamro.battleship;
 
-import com.abnamro.battleship.entity.BattleShipRequest;
+import com.abnamro.battleship.domain.BattleShipRequest;
 import com.abnamro.battleship.entity.Ship;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -37,13 +35,10 @@ class BattleShipApplicationTests {
 
 		System.out.println(player1Ships);
 
-		Gson gson = new GsonBuilder().setPrettyPrinting().create();
 		ObjectMapper mapper = new ObjectMapper();
 		String json = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(battleShipRequest);
 		System.out.println(json);
 
-		String json1 = gson.toJson(battleShipRequest); // converts to json
-		System.out.println(json1);
 	}
 
 }

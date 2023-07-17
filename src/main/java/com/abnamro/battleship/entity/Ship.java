@@ -20,16 +20,12 @@ public class Ship {
     @ElementCollection
     private List<String> positions;
 
+    @ElementCollection
+    private List<String> hitPositions;
+
     public Ship() {
         this.positions = new ArrayList<>();
-    }
-
-    public List<String> getPositions() {
-        return positions;
-    }
-
-    public void setPositions(List<String> positions) {
-        this.positions = positions;
+        this.hitPositions = new ArrayList<>();
     }
 }
 

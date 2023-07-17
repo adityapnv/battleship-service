@@ -18,9 +18,7 @@ public class Player {
     @OneToMany(cascade = CascadeType.ALL)
     private List<Ship> fleet;
 
-    private String[][] grid;
-
-    @ElementCollection
-    private List<String> guesses;
+    @OneToMany(cascade = CascadeType.ALL)
+    private List<Cell> cells;
 
 }

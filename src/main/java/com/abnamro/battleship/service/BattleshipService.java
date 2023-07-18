@@ -86,7 +86,7 @@ public class BattleshipService {
             return ResponseEntity.badRequest().body("It's not your turn to attack.");
         }
 
-        if (isNotValidPosition(position)) {
+        if (isInvalidPosition(position)) {
             return ResponseEntity.badRequest().body("Invalid attack position.");
         }
 
@@ -115,6 +115,7 @@ public class BattleshipService {
                     gameRepository.save(game);
                     return ResponseEntity.ok(attackingPlayer.getName() + " wins! All opponent's ships sunk.");
                 } else {
+                    gameRepository.save(game);
                     return ResponseEntity.ok("SUNK");
                 }
             }
@@ -161,15 +162,18 @@ public class BattleshipService {
         Set<String> allPositions = new HashSet<>();
 
         for (Ship ship : ships) {
-            if (ship == null || ship.getType() == null || ship.getPosition() == null || ship.getOrientation() == null) {
+            if (ship == null || isNullOrEmpty(ship.getType()) || isNullOrEmpty(ship.getPosition()) || isNullOrEmpty(ship.getOrientation())) {
                 return "Invalid ship data.";
             }
 
             String position = ship.getPosition();
             String orientation = ship.getOrientation();
 
-            if (isNotValidPosition(position)) {
+            if (isInvalidPosition(position)) {
                 return "Invalid starting position for ship: " + ship.getType();
+            }
+            if (isInvalidOrientation(orientation.toUpperCase())){
+                return "Invalid orientation for ship: " + ship.getType();
             }
 
             int row = position.charAt(0) - 'A';
@@ -207,10 +211,14 @@ public class BattleshipService {
         return null;
     }
 
+    private boolean isInvalidOrientation(String orientation) {
+        return !("HORIZONTAL".equals(orientation) || "VERTICAL".equals(orientation));
+    }
 
-    private boolean isNotValidPosition(String position) {
+
+    private boolean isInvalidPosition(String position) {
         if (position.length() < 2 || position.length() > 3) {
-            return false;
+            return true;
         }
 
         int row = position.charAt(0) - 'A';
@@ -218,28 +226,15 @@ public class BattleshipService {
         try {
             col = Integer.parseInt(position.substring(1)) - 1;
         } catch (NumberFormatException e) {
-            return false;
+            return true;
         }
 
         return row < 0 || row >= 10 || col < 0 || col >= 10;
     }
 
-    /*private void populateShipPositions(List<Ship> ships, List<Cell> cells) {
-        for (Ship ship : ships) {
-            int shipSize = getShipSize(ship.getType());
-            List<String> positions = ship.getPositions();
-
-            // Set ship positions in the cells
-            for (String position : positions) {
-                Cell cell = cells.stream().filter(c -> c.getPosition().equals(position)).findFirst().orElse(null);
-                if (cell == null) {
-                    cell.setStatus("SHIP");
-                } else {
-                    System.out.println("------------Something wrong------------------");
-                }
-            }
-        }
-    }*/
+    private Boolean isNullOrEmpty(String str){
+        return str == null || str.trim().length() == 0;
+    }
 
     private int getShipSize(String shipType) {
         switch (shipType) {

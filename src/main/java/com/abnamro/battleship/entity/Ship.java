@@ -14,7 +14,6 @@ public class Ship {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String type;
-    private int size;
     private String position;
     private String orientation;
     @ElementCollection

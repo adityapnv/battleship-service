@@ -22,12 +22,10 @@ class BattleShipApplicationTests {
 		s1.setType("A");
 		s1.setPosition("A1");
 		s1.setOrientation("Horizontal");
-		s1.setSize(3);
 		Ship s2 = new Ship();
 		s2.setType("B");
 		s2.setPosition("B2");
 		s2.setOrientation("Horizontal");
-		s2.setSize(3);
 		player1Ships.add(s1);
 		player1Ships.add(s2);
 		battleShipRequest.setPlayer1Ships(player1Ships);

@@ -1,9 +1,16 @@
 package com.abnamro.battleship.entity;
 
+
 import lombok.Data;
 
-import javax.persistence.*;
-import javax.validation.constraints.NotNull;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.util.List;
 
 @Data
@@ -14,7 +21,7 @@ public class Player {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Player name cannot be blank")
+    @NotBlank(message = "Player name cannot be blank")
     private String name;
 
     @OneToMany(cascade = CascadeType.ALL)

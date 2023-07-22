@@ -4,7 +4,7 @@
 This service will allow you to play a Battleship game.
 
 Battleship is a classic board game where two players compete against each other to sink each other's fleet of ships. 
-The game is played on a 10x10 grid board, where each cell is labeled by numbers and letters (e.g., A1, B2, C3, etc.).
+The game is played on a 10x10 grid board, where each cell is labeled by letters and numbers (e.g., A1, B2, C3, etc.).
 
 ## Rules of the Game
 
@@ -17,13 +17,14 @@ The fleet consists of the following ships, each occupying a certain number of co
 - Cruiser (3 cells)
 - Submarine (3 cells)
 - Destroyer (2 cells)
+
 Ships can be placed either horizontally or vertically, but not diagonally. They should not overlap or touch each other.
 
 ### 2 Gameplay:
 
 Players take turns to try and guess the location of their opponent's ships by calling out a cell on the opponent's grid (e.g., A1, B2, etc.).
 The opponent responds with "Hit" if the guess hits a ship or "Miss" if the guess does not hit any ship. The hits and misses are marked on the player's own grid.
-If a ship is hit but not entirely sunk, the opponent simply says "Hit" without revealing which ship was hit. If a ship is hit and all its cells are sunk, the opponent declares "Sunk," and the player marks the ship as sunk on their own grid.
+If a ship is hit but not entirely sunk, the opponent simply says "Hit" without revealing which ship was hit. If a ship is hit and all its cells are sunk, the opponent declares "Sunk".
 Players keep track of their guesses and the hits or misses.
 
 ### 3 Winning the Game:
@@ -56,7 +57,7 @@ Now application is up and running
 ![img_1.png](src/main/resources/img_1.png)
 
 1. #### POST: battleship/setup
-- Start the game by setting up your fleet of ships using this endpoint. Provide your name and the positions of your ships to place them on your grid board.
+- Start the game by setting up your fleet of ships using this endpoint. Provide your name and the starting cell positions of your ships to place them on your grid board.
 
 2. #### POST: battleship/attack
 - Once both players have set up their fleets, take turns attacking each other using the /attack endpoint. Guess the cell position you want to attack on your opponent's grid by providing your name and the cell position.

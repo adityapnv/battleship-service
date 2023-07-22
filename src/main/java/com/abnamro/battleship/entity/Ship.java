@@ -1,6 +1,7 @@
 package com.abnamro.battleship.entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 import javax.persistence.ElementCollection;
@@ -18,6 +19,7 @@ import java.util.List;
 @Entity
 @Table(name = "ship")
 public class Ship {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -29,8 +31,10 @@ public class Ship {
     @NotBlank(message = "orientation cannot be blank")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Only strings are allowed for orientation.")
     private String orientation;
+    @JsonIgnore
     @ElementCollection
     private List<String> positions;
+    @JsonIgnore
     @ElementCollection
     private List<String> hitPositions;
 

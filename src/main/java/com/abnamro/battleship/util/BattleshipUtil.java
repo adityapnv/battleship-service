@@ -4,7 +4,11 @@ import com.abnamro.battleship.entity.Cell;
 import com.abnamro.battleship.entity.Ship;
 import com.abnamro.battleship.exception.InvalidShipDataException;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class BattleshipUtil {
 
@@ -61,8 +65,8 @@ public class BattleshipUtil {
 
             List<String> positions = new ArrayList<>();
             for (int i = 0; i < shipSize; i++) {
-                int currentRow = (orientation.equalsIgnoreCase("horizontal")) ? shipStartingRow : shipStartingRow + i;
-                int currentCol = (orientation.equalsIgnoreCase("vertical")) ? shipStartingColumn : shipStartingColumn + i;
+                int currentRow = (orientation.equalsIgnoreCase(HORIZONTAL)) ? shipStartingRow : shipStartingRow + i;
+                int currentCol = (orientation.equalsIgnoreCase(VERTICAL)) ? shipStartingColumn : shipStartingColumn + i;
                 String shipPosition = String.valueOf((char) ('A' + currentRow)) + (currentCol + 1);
 
                 if (allPositions.contains(shipPosition)) {

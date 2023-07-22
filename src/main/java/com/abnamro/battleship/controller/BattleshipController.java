@@ -15,7 +15,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Pattern;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/battleship")
 @Validated
 public class BattleshipController {
 

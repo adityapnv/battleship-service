@@ -21,10 +21,10 @@ public class Ship {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Type cannot be blank")
+    @NotBlank(message = "Ship type cannot be blank")
     private String type;
     @NotBlank(message = "position cannot be blank")
-    @Pattern(regexp = "^[A-Z]\\d{1,2}$", message = "Position must contain only one capital letter and two digits max")
+    @Pattern(regexp = "^[A-Z]\\d{1,2}$", message = "Position must contain one capital letter followed by two digit number")
     private String position;
     @NotBlank(message = "orientation cannot be blank")
     @Pattern(regexp = "^[A-Za-z]+$", message = "Only strings are allowed for orientation.")

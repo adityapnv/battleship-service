@@ -6,16 +6,15 @@ import com.abnamro.battleship.entity.Game;
 import com.abnamro.battleship.entity.Player;
 import com.abnamro.battleship.entity.Ship;
 import com.abnamro.battleship.exception.InvalidGameException;
-import com.abnamro.battleship.exception.InvalidShipDataException;
 import com.abnamro.battleship.repository.GameRepository;
+import com.abnamro.battleship.util.BattleshipUtil;
+import com.abnamro.battleship.util.ErrorMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 @Service
 public class BattleshipService {
@@ -23,26 +22,27 @@ public class BattleshipService {
     @Autowired
     GameRepository gameRepository;
 
-
+    /**
+     * Service method for setup. Create initial setup required.
+     * @param battleShipRequest - Request containing player and player ship details.
+     * @return gameID.
+     */
     public ResponseEntity<String> save(BattleShipRequest battleShipRequest) {
 
         List<Ship> player1Ships = battleShipRequest.getPlayer1Ships();
         List<Ship> player2Ships = battleShipRequest.getPlayer2Ships();
 
-        validateAndUpdateShipPlacements(player1Ships);
-        validateAndUpdateShipPlacements(player2Ships);
-
         Player player1 = new Player();
-        player1.setFleet(player1Ships);
+        player1.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player1Ships));
         player1.setName(battleShipRequest.getPlayer1Name());
         player1.setCells(new ArrayList<>());
-        player1.getCells().addAll(createEmptyCells());
+        player1.getCells().addAll(BattleshipUtil.createEmptyCells());
 
         Player player2 = new Player();
-        player2.setFleet(player2Ships);
+        player2.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player2Ships));
         player2.setName(battleShipRequest.getPlayer2Name());
         player2.setCells(new ArrayList<>());
-        player2.getCells().addAll(createEmptyCells());
+        player2.getCells().addAll(BattleshipUtil.createEmptyCells());
 
         Game game = new Game();
         game.setPlayer1(player1);
@@ -54,9 +54,19 @@ public class BattleshipService {
         return ResponseEntity.ok("Game has been set up with gameID: "+game.getId());
     }
 
+    /**
+     * Method to support play and attack opponent.
+     * @param gameId Game ID
+     * @param playerName - Name of the attacking player
+     * @param position - where to attack
+     * @return result.
+     */
     public ResponseEntity<String> attack(Long gameId, String playerName, String position) {
+        if (BattleshipUtil.isInvalidPosition(position)) {
+            throw new InvalidGameException(ErrorMessage.INVALID_POSITION + position);
+        }
         Game game = gameRepository.findById(gameId).orElseThrow(()
-                -> new InvalidGameException("Game not found :"+gameId));
+                -> new InvalidGameException(ErrorMessage.GAME_NOT_FOUND + gameId));
 
         Player attackingPlayer;
         Player opponentPlayer;
@@ -68,30 +78,30 @@ public class BattleshipService {
             attackingPlayer = game.getPlayer2();
             opponentPlayer = game.getPlayer1();
         } else {
-            throw new InvalidGameException("Invalid player name: "+playerName);
+            throw new InvalidGameException(ErrorMessage.INVALID_PLAYER + playerName);
         }
 
         if(null == game.getCurrentPlayer()){
-            throw new InvalidGameException("This game is completed use Setup endpoint to initiate new game");
+            throw new InvalidGameException(ErrorMessage.GAME_COMPLETED);
         }
 
         if (attackingPlayer != game.getCurrentPlayer()) {
-            throw new InvalidGameException("It's not your turn to attack.");
+            throw new InvalidGameException(ErrorMessage.NOT_YOUR_TURN);
         }
 
         Cell targetCell = getCellByPosition(opponentPlayer, position);
         if (targetCell == null) {
-            throw new InvalidGameException("Invalid attack position.");
+            throw new InvalidGameException(ErrorMessage.INVALID_POSITION);
         }
         if (targetCell.getStatus() != null) {
-            throw new InvalidGameException("Position has already been attacked.");
+            throw new InvalidGameException(ErrorMessage.POSITION_ALREADY_ATTACKED);
         }
 
-        targetCell.setStatus("MISS");
+        targetCell.setStatus(BattleshipUtil.MISS);
         game.setCurrentPlayer(opponentPlayer);
         Ship hitShip = getHitShip(opponentPlayer, position);
         if (hitShip != null) {
-            targetCell.setStatus("HIT");
+            targetCell.setStatus(BattleshipUtil.HIT);
             game.setCurrentPlayer(attackingPlayer);
             hitShip.getHitPositions().add(position);
 
@@ -104,14 +114,9 @@ public class BattleshipService {
                     return ResponseEntity.ok(attackingPlayer.getName() + " wins! All opponent's ships sunk.");
                 } else {
                     gameRepository.save(game);
-                    return ResponseEntity.ok("SUNK");
+                    return ResponseEntity.ok(BattleshipUtil.SUNK);
                 }
             }
-        }
-
-        if (opponentPlayer.getFleet().isEmpty()) {
-            gameRepository.delete(game);
-            return ResponseEntity.ok(attackingPlayer.getName() + " wins!");
         }
 
         gameRepository.save(game);
@@ -136,115 +141,4 @@ public class BattleshipService {
     private boolean isShipSunk(Ship ship) {
         return ship.getPositions().stream().allMatch(ship.getHitPositions()::contains);
     }
-
-    /**
-     * method to validate input data and update ship positions.
-     * @param ships - ships to be validated.
-     */
-    private void validateAndUpdateShipPlacements(List<Ship> ships) {
-        if (ships == null || ships.isEmpty()) {
-            throw new InvalidShipDataException("No ships found.");
-        }
-
-        Set<String> allPositions = new HashSet<>();
-
-        for (Ship ship : ships) {
-            if (ship == null) {
-                throw new InvalidShipDataException("Invalid ship data.");
-            }
-
-            String position = ship.getPosition();
-            String orientation = ship.getOrientation();
-
-            if (isInvalidPosition(position)) {
-                throw new InvalidShipDataException("Invalid starting position for ship: " + ship.getType());
-            }
-            if (isInvalidOrientation(orientation.toUpperCase())){
-                throw new InvalidShipDataException("Invalid orientation for ship: " + ship.getType());
-            }
-
-            int row = position.charAt(0) - 'A';
-            int col = Integer.parseInt(position.substring(1)) - 1;
-
-            int shipSize = getShipSize(ship.getType());
-            if (shipSize == 0) {
-                throw new InvalidShipDataException("Invalid ship type: " + ship.getType());
-            }
-
-            int endRow = (orientation.equalsIgnoreCase("horizontal")) ? row : row + shipSize - 1;
-            int endCol = (orientation.equalsIgnoreCase("vertical")) ? col : col + shipSize - 1;
-
-            if (endRow >= 10 || endCol >= 10) {
-                throw new InvalidShipDataException("Invalid ship placement, " +
-                        "ship placement exceeds grid boundaries for: " + ship.getType());
-            }
-
-            List<String> positions = new ArrayList<>();
-            for (int i = 0; i < shipSize; i++) {
-                int currentRow = (orientation.equalsIgnoreCase("horizontal")) ? row : row + i;
-                int currentCol = (orientation.equalsIgnoreCase("vertical")) ? col : col + i;
-                String shipPosition = String.valueOf((char) ('A' + currentRow)) + (currentCol + 1);
-
-                if (allPositions.contains(shipPosition)) {
-                    throw new InvalidShipDataException("Ship placement overlaps with another ship at: "+shipPosition);
-                }
-
-                allPositions.add(shipPosition);
-                positions.add(shipPosition);
-            }
-            ship.setPositions(positions);
-        }
-    }
-
-    private boolean isInvalidOrientation(String orientation) {
-        return !("HORIZONTAL".equals(orientation) || "VERTICAL".equals(orientation));
-    }
-
-
-    private boolean isInvalidPosition(String position) {
-        if (position.length() < 2 || position.length() > 3) {
-            return true;
-        }
-
-        int row = position.charAt(0) - 'A';
-        int col;
-        try {
-            col = Integer.parseInt(position.substring(1)) - 1;
-        } catch (NumberFormatException e) {
-            return true;
-        }
-
-        return row < 0 || row >= 10 || col < 0 || col >= 10;
-    }
-
-    private int getShipSize(String shipType) {
-        switch (shipType) {
-            case "Aircraft Carrier":
-                return 5;
-            case "Battleship":
-                return 4;
-            case "Cruiser":
-            case "Submarine":
-                return 3;
-            case "Destroyer":
-                return 2;
-            default:
-                return 0;
-        }
-    }
-
-    private List<Cell> createEmptyCells() {
-        List<Cell> cells = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            for (int j = 0; j < 10; j++) {
-                String position = (char) ('A' + i) + String.valueOf(j + 1);
-                Cell cell = new Cell();
-                cell.setPosition(position);
-                cell.setStatus(null);
-                cells.add(cell);
-            }
-        }
-        return cells;
-    }
-
 }

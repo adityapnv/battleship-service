@@ -16,12 +16,14 @@ public class BattleshipUtil {
 
     /**
      * method to validate input data and update ship positions.
+     *
      * @param ships - ships to be validated.
+     * @param playerName - Name of player
      * @return updated ships.
      */
-    public static List<Ship> validateAndUpdateShipPlacements(List<Ship> ships) {
+    public static List<Ship> validateAndUpdateShipPlacements(List<Ship> ships, String playerName) {
         if (ships == null || ships.isEmpty()) {
-            throw new InvalidShipDataException(ErrorMessage.NO_SHIPS);
+            throw new InvalidShipDataException(ErrorMessage.NO_SHIPS );
         }
 
         Set<String> allPositions = new HashSet<>();
@@ -42,29 +44,29 @@ public class BattleshipUtil {
                 throw new InvalidShipDataException(ErrorMessage.INVALID_SHIP_ORIENTATION + ship.getType());
             }
 
-            int row = position.charAt(0) - 'A';
-            int col = Integer.parseInt(position.substring(1)) - 1;
+            int shipStartingRow = position.charAt(0) - 'A';
+            int shipStartingColumn = Integer.parseInt(position.substring(1)) - 1;
 
             int shipSize = BattleshipUtil.getShipSize(ship.getType());
             if (shipSize == 0) {
                 throw new InvalidShipDataException(ErrorMessage.INVALID_SHIP_TYPE + ship.getType());
             }
 
-            int endRow = (orientation.equalsIgnoreCase(HORIZONTAL)) ? row : row + shipSize - 1;
-            int endCol = (orientation.equalsIgnoreCase(VERTICAL)) ? col : col + shipSize - 1;
+            int shipEndRow = (orientation.equalsIgnoreCase(HORIZONTAL)) ? shipStartingRow : shipStartingRow + shipSize - 1;
+            int shipEndColumn = (orientation.equalsIgnoreCase(VERTICAL)) ? shipStartingColumn : shipStartingColumn + shipSize - 1;
 
-            if (endRow >= 10 || endCol >= 10) {
+            if (isInvalidPosition(shipEndRow, shipEndColumn)) {
                 throw new InvalidShipDataException(ErrorMessage.INVALID_SHIP_PLACEMENT + ship.getType());
             }
 
             List<String> positions = new ArrayList<>();
             for (int i = 0; i < shipSize; i++) {
-                int currentRow = (orientation.equalsIgnoreCase("horizontal")) ? row : row + i;
-                int currentCol = (orientation.equalsIgnoreCase("vertical")) ? col : col + i;
+                int currentRow = (orientation.equalsIgnoreCase("horizontal")) ? shipStartingRow : shipStartingRow + i;
+                int currentCol = (orientation.equalsIgnoreCase("vertical")) ? shipStartingColumn : shipStartingColumn + i;
                 String shipPosition = String.valueOf((char) ('A' + currentRow)) + (currentCol + 1);
 
                 if (allPositions.contains(shipPosition)) {
-                    throw new InvalidShipDataException(ErrorMessage.SHIP_OVERLAP +shipPosition);
+                    throw new InvalidShipDataException(playerName + ErrorMessage.SHIP_OVERLAP +shipPosition);
                 }
 
                 allPositions.add(shipPosition);
@@ -72,10 +74,11 @@ public class BattleshipUtil {
 
             }
 
-            for (int row1 = row - 1; row1 <= endRow + 1; row1++) {
-                for (int col1 = col - 1; col1 <= endCol + 1; col1++) {
-                    if (!isInvalidPosition(row1, col1)) {
-                        String adjacentPosition = String.valueOf((char) ('A' + row1)) + (col1 + 1);
+            //to check if ships touch each other.
+            for (int adjRow = shipStartingRow - 1; adjRow <= shipEndRow + 1; adjRow++) {
+                for (int adjCol = shipStartingColumn - 1; adjCol <= shipEndColumn + 1; adjCol++) {
+                    if (!isInvalidPosition(adjRow, adjCol)) {
+                        String adjacentPosition = String.valueOf((char) ('A' + adjRow)) + (adjCol + 1);
                         if(!positions.contains(adjacentPosition)){
                             adjacentPositions.add(adjacentPosition);
                         }
@@ -84,7 +87,7 @@ public class BattleshipUtil {
             }
 
             if (!Collections.disjoint(allPositions, adjacentPositions)) {
-                throw new InvalidShipDataException(ErrorMessage.SHIP_TOUCH_EACH_OTHER);
+                throw new InvalidShipDataException(playerName + ErrorMessage.SHIP_TOUCH_EACH_OTHER);
             }
 
             ship.setPositions(positions);

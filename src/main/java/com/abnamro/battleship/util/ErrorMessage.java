@@ -14,6 +14,6 @@ public class ErrorMessage {
     public static String INVALID_SHIP_ORIENTATION = "Invalid orientation for ship ";
     public static String INVALID_SHIP_TYPE = "Invalid ship type ";
     public static String INVALID_SHIP_PLACEMENT = "Invalid ship placement, ship placement exceeds grid boundaries for Ship ";
-    public static String SHIP_OVERLAP = "Ship placement overlaps with another ship at: ";
-    public static String SHIP_TOUCH_EACH_OTHER = "Ships must not touch each other.";
+    public static String SHIP_OVERLAP = " Ship placement overlaps with another ship at: ";
+    public static String SHIP_TOUCH_EACH_OTHER = " Ships must not touch each other.";
 }

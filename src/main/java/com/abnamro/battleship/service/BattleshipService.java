@@ -33,14 +33,14 @@ public class BattleshipService {
         List<Ship> player2Ships = battleShipRequest.getPlayer2Ships();
 
         Player player1 = new Player();
-        player1.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player1Ships));
         player1.setName(battleShipRequest.getPlayer1Name());
+        player1.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player1Ships, player1.getName()));
         player1.setCells(new ArrayList<>());
         player1.getCells().addAll(BattleshipUtil.createEmptyCells());
 
         Player player2 = new Player();
-        player2.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player2Ships));
         player2.setName(battleShipRequest.getPlayer2Name());
+        player2.setFleet(BattleshipUtil.validateAndUpdateShipPlacements(player2Ships, player2.getName()));
         player2.setCells(new ArrayList<>());
         player2.getCells().addAll(BattleshipUtil.createEmptyCells());
 

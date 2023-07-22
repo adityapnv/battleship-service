@@ -46,7 +46,7 @@ public class BattleshipUtilTest {
         List<String> ship2Positions = Arrays.asList("C1", "D1", "E1", "F1");
         List<String> ship3Positions = Arrays.asList("D3", "D4", "D5");
         List<String> ship4Positions = Arrays.asList("F3", "G3", "H3");
-        List<Ship> updatedShips = BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+        List<Ship> updatedShips = BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         Assertions.assertNotNull(updatedShips);
         Assertions.assertEquals(4, updatedShips.size());
         Assertions.assertEquals(ship1Positions, updatedShips.get(0).getPositions());
@@ -60,9 +60,9 @@ public class BattleshipUtilTest {
         String position = "A1";
         playerShips.get(1).setPosition(position);
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         } catch (InvalidShipDataException ex){
-            Assertions.assertEquals(ErrorMessage.SHIP_OVERLAP + position, ex.getMessage());
+            Assertions.assertEquals("Player1"+ErrorMessage.SHIP_OVERLAP + position, ex.getMessage());
         }
     }
     @Test
@@ -70,9 +70,9 @@ public class BattleshipUtilTest {
         String position = "B1";
         playerShips.get(1).setPosition(position);
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player2");
         } catch (InvalidShipDataException ex){
-            Assertions.assertEquals(ErrorMessage.SHIP_TOUCH_EACH_OTHER, ex.getMessage());
+            Assertions.assertEquals("Player2"+ErrorMessage.SHIP_TOUCH_EACH_OTHER, ex.getMessage());
         }
     }
 
@@ -81,7 +81,7 @@ public class BattleshipUtilTest {
         String invalidShipType = "aaaaa";
         playerShips.get(1).setType(invalidShipType);
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         } catch (InvalidShipDataException ex){
             Assertions.assertEquals(ErrorMessage.INVALID_SHIP_TYPE + invalidShipType, ex.getMessage());
         }
@@ -92,7 +92,7 @@ public class BattleshipUtilTest {
         String position = "K1";
         playerShips.get(1).setPosition(position);
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         } catch (InvalidShipDataException ex){
             Assertions.assertEquals(ErrorMessage.INVALID_STARTING_POSITION + playerShips.get(1).getType(), ex.getMessage());
         }
@@ -103,7 +103,7 @@ public class BattleshipUtilTest {
         String position = "A10";
         playerShips.get(0).setPosition(position);
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         } catch (InvalidShipDataException ex){
             Assertions.assertEquals(ErrorMessage.INVALID_SHIP_PLACEMENT + playerShips.get(0).getType(), ex.getMessage());
         }
@@ -113,7 +113,7 @@ public class BattleshipUtilTest {
     public void testInvalidShipOrientation(){
         playerShips.get(3).setOrientation("Invalid");
         try {
-            BattleshipUtil.validateAndUpdateShipPlacements(playerShips);
+            BattleshipUtil.validateAndUpdateShipPlacements(playerShips, "Player1");
         } catch (InvalidShipDataException ex){
             Assertions.assertEquals(ErrorMessage.INVALID_SHIP_ORIENTATION + playerShips.get(3).getType(), ex.getMessage());
         }

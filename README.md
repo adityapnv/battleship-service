@@ -59,7 +59,8 @@ Now application is up and running
 - Start the game by setting up your fleet of ships using this endpoint. Provide your name and the starting cell positions of your ships to place them on your grid board.
 
 2. #### POST: battleship/attack
-- Once both players have set up their fleets, take turns attacking each other using the /attack endpoint. Guess the cell position you want to attack on your opponent's grid by providing your name and the cell position.
+- Once both players have set up their fleets, take turns attacking each other using the /attack endpoint. 
+- Use the above generated gameId and guess the cell position you want to attack on your opponent's grid by providing your name and the cell position.
 - The opponent will respond with "Hit" if your attack hits one of their ships or "Miss" if it does not hit anything. Keep track of your guesses and the hits or misses.
 - If you hit an opponent's ship but don't sink it entirely, the response will be "Hit" without revealing which ship was hit. If you sink an opponent's ship, the response will be "Sunk".
 - Continue taking turns attacking each other until one player successfully sinks all the opponent's ships.

@@ -75,7 +75,7 @@ public class BattleshipControllerTest {
         Mockito.when(battleshipService.save(any(BattleShipRequest.class)))
                 .thenReturn(ResponseEntity.ok("Game setup successful"));
 
-        mockMvc.perform(post("/api/setup")
+        mockMvc.perform(post("/battleship/setup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(battleShipRequest)))
                 .andExpect(status().isOk())
@@ -85,7 +85,7 @@ public class BattleshipControllerTest {
    @Test
     public void testSetupNullPlayerNameRequest() throws Exception {
         battleShipRequest.setPlayer1Name(null);
-       mockMvc.perform(post("/api/setup")
+       mockMvc.perform(post("/battleship/setup")
                        .contentType(MediaType.APPLICATION_JSON)
                        .content(mapper.writeValueAsString(battleShipRequest)))
                 .andExpect(status().isBadRequest())
@@ -95,7 +95,7 @@ public class BattleshipControllerTest {
     @Test
     public void testSetupWithEmptyPlayerShips() throws Exception {
         battleShipRequest.setPlayer1Ships(null);
-        mockMvc.perform(post("/api/setup")
+        mockMvc.perform(post("/battleship/setup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(battleShipRequest)))
                 .andExpect(status().isBadRequest())
@@ -106,7 +106,7 @@ public class BattleshipControllerTest {
     public void testSetupWithInvalidShipsData() throws Exception {
         battleShipRequest.getPlayer1Ships().get(0).setType(null);
         battleShipRequest.getPlayer2Ships().get(0).setType(null);
-        mockMvc.perform(post("/api/setup")
+        mockMvc.perform(post("/battleship/setup")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(mapper.writeValueAsString(battleShipRequest)))
                 .andExpect(status().isBadRequest())
@@ -120,7 +120,7 @@ public class BattleshipControllerTest {
 
         String position = "B10";
 
-        mockMvc.perform(post("/api/attack")
+        mockMvc.perform(post("/battleship/attack")
                         .param("gameId", "1")
                         .param("playerName", "Player1")
                         .param("position", position))
@@ -132,7 +132,7 @@ public class BattleshipControllerTest {
     public void testAttackCellInvalidGameId() throws Exception {
         String position = "A1";
 
-        mockMvc.perform(post("/api/attack")
+        mockMvc.perform(post("/battleship/attack")
                         .param("gameId", "1a")
                         .param("playerName", "Player1")
                         .param("position", position))
@@ -144,7 +144,7 @@ public class BattleshipControllerTest {
     public void testAttackCellInvalidPlayerName() throws Exception {
         String position = "A1";
 
-        mockMvc.perform(post("/api/attack")
+        mockMvc.perform(post("/battleship/attack")
                         .param("gameId", "1")
                         .param("playerName", "Player1$")
                         .param("position", position))
@@ -156,7 +156,7 @@ public class BattleshipControllerTest {
     public void testAttackCellInvalidPosition() throws Exception {
         String position = "9Z9";
 
-        mockMvc.perform(post("/api/attack")
+        mockMvc.perform(post("/battleship/attack")
                         .param("gameId", "1")
                         .param("playerName", "Player1")
                         .param("position", position))

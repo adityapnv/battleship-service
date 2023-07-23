@@ -25,7 +25,6 @@ Ships can be placed either horizontally or vertically, but not diagonally. They 
 Players take turns to try and guess the location of their opponent's ships by calling out a cell on the opponent's grid (e.g., A1, B2, etc.).
 The opponent responds with "Hit" if the guess hits a ship or "Miss" if the guess does not hit any ship. The hits and misses are marked on the player's own grid.
 If a ship is hit but not entirely sunk, the opponent simply says "Hit" without revealing which ship was hit. If a ship is hit and all its cells are sunk, the opponent declares "Sunk".
-Players keep track of their guesses and the hits or misses.
 
 ### 3 Winning the Game:
 
@@ -65,6 +64,11 @@ Now application is up and running
 - If you hit an opponent's ship but don't sink it entirely, the response will be "Hit" without revealing which ship was hit. If you sink an opponent's ship, the response will be "Sunk".
 - Continue taking turns attacking each other until one player successfully sinks all the opponent's ships.
 - The player who sinks all the opponent's ships first is declared the winner.
+
+## Note:
+- The attacking player's turn continues when the opponent responds with 'Hit' or 'Sunk'.
+- The player's turn will not change if the player chooses an already attacked cell.
+- The player's turn changes when the opponent responds with 'Miss'.
 
 ### Actual Game For Reference
 ![img.png](src/main/resources/img3.png)

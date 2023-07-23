@@ -62,11 +62,17 @@ public class BattleshipService {
      * @return result.
      */
     public ResponseEntity<String> attack(Long gameId, String playerName, String position) {
+
+        Game game = gameRepository.findById(gameId).orElseThrow(()
+                -> new InvalidGameException(ErrorMessage.GAME_NOT_FOUND + gameId));
+
+        if(null == game.getCurrentPlayer()){
+            throw new InvalidGameException(ErrorMessage.GAME_COMPLETED);
+        }
+
         if (BattleshipUtil.isInvalidPosition(position)) {
             throw new InvalidGameException(ErrorMessage.INVALID_POSITION + position);
         }
-        Game game = gameRepository.findById(gameId).orElseThrow(()
-                -> new InvalidGameException(ErrorMessage.GAME_NOT_FOUND + gameId));
 
         Player attackingPlayer;
         Player opponentPlayer;
@@ -79,10 +85,6 @@ public class BattleshipService {
             opponentPlayer = game.getPlayer1();
         } else {
             throw new InvalidGameException(ErrorMessage.INVALID_PLAYER + playerName);
-        }
-
-        if(null == game.getCurrentPlayer()){
-            throw new InvalidGameException(ErrorMessage.GAME_COMPLETED);
         }
 
         if (attackingPlayer != game.getCurrentPlayer()) {

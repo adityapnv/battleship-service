@@ -67,7 +67,7 @@ Now application is up and running
 - The player who sinks all the opponent's ships first is declared the winner.
 
 ### Actual Game For Reference
-! ![img.png](src/main/resources/img.png)
+![img.png](src/main/resources/img3.png)
 
 Have fun playing Battleship!
 

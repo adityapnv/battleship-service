@@ -53,12 +53,12 @@ Now application is up and running
 
 - Open the URL in your browser : http://localhost:8081/swagger-ui/index.html
 - You will see a swagger page with all the defined specs of the service.
-![img_1.png](src/main/resources/img_1.png)
+![img.png](src/main/resources/img1.png)
 
 1. #### POST: battleship/setup
 - Start the game by setting up your fleet of ships using this endpoint. Provide your name and the starting cell positions of your ships to place them on your grid board.
 
-2. #### POST: battleship/attack
+2. #### PUT: battleship/attack
 - Once both players have set up their fleets, take turns attacking each other using the /attack endpoint. 
 - Use the above generated gameId and guess the cell position you want to attack on your opponent's grid by providing your name and the cell position.
 - The opponent will respond with "Hit" if your attack hits one of their ships or "Miss" if it does not hit anything. Keep track of your guesses and the hits or misses.

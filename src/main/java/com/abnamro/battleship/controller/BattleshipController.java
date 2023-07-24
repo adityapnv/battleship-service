@@ -4,11 +4,7 @@ import com.abnamro.battleship.domain.BattleShipRequest;
 import com.abnamro.battleship.service.BattleshipService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
@@ -43,7 +39,7 @@ public class BattleshipController {
      * @param position where to attack.
      * @return Hit or Miss or Sunk or winner.
      */
-    @PostMapping("/attack")
+    @PutMapping("/attack")
     public ResponseEntity<String> attackCell(
             @NotBlank(message = "gameId cannot be empty")
             @Pattern(regexp = "^[0-9]+$", message = "Only numbers are allowed for GameID")
